@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 function OverviewPage() {
   const [modules, setModules] = useState([]);
-
   useEffect(() => {
     fetchModules();
   }, []);
@@ -13,23 +11,31 @@ function OverviewPage() {
       const response = await fetch("https://learn.microsoft.com/api/catalog/");
       const data = await response.json();
       console.log("Data", data.modules.slice(0, 1));
-      setModules(data.modules.slice(0, 10));
+      setModules(data.modules);
     } catch (error) {
       console.error("Error fetching modules:", error);
     }
   };
+  const handleClick = () => {
+    console.log("Anchor element clicked");
+  };
 
   return (
     <div>
-      <h1>Overview Page</h1>
+      <h1 style={{ color: "blue" }}>List of Modules</h1>
       <ul>
         {modules.map((module) => (
           <li key={module.uid}>
-            <Link to={`/detail/${encodeURIComponent(module.url)}`}>
+            <a
+              onClick={(event) => handleClick(event, module.url)}
+              href={`${module.url}`}
+              target="_blank"
+              rel="noreferrer"
+            >
               <h3>{module.title}</h3>
-              <p>{module.summary}</p>
-              <img src={module.social_image_url} alt={module.title} />
-            </Link>
+            </a>
+            <p>{module.summary}</p>
+            <img src={module.social_image_url} alt={module.title} />
           </li>
         ))}
       </ul>
